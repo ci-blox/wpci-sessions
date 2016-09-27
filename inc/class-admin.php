@@ -1,6 +1,6 @@
 <?php
 
-namespace Pantheon_Sessions;
+namespace WpCI_Sessions;
 
 class Admin {
 
@@ -22,7 +22,7 @@ class Admin {
 	private function setup_actions() {
 
 		add_action( 'admin_menu', array( $this, 'action_admin_menu' ) );
-		add_action( 'wp_ajax_pantheon_clear_session', array( $this, 'handle_clear_session' ) );
+		add_action( 'wp_ajax_wpci_clear_session', array( $this, 'handle_clear_session' ) );
 
 	}
 
@@ -31,7 +31,7 @@ class Admin {
 	 */
 	public function action_admin_menu() {
 
-		add_management_page( __( 'Pantheon Sessions', 'pantheon-sessions' ), __( 'Sessions', 'pantheon-sessions' ), self::$capability, 'pantheon-sessions', array( $this, 'handle_page' ) );
+		add_management_page( __( 'WpCI Sessions', 'wpci-sessions' ), __( 'Sessions', 'wpci-sessions' ), self::$capability, 'wpci-sessions', array( $this, 'handle_page' ) );
 
 	}
 
@@ -48,19 +48,19 @@ class Admin {
 
 		echo '<div>';
 		$query_args = array(
-			'action'       => 'pantheon_clear_session',
-			'nonce'        => wp_create_nonce( 'pantheon_clear_session' ),
+			'action'       => 'wpci_clear_session',
+			'nonce'        => wp_create_nonce( 'wpci_clear_session' ),
 			'session'      => 'all',
 			);
-		if ( $wpdb->get_var( "SELECT COUNT(session_id) FROM $wpdb->pantheon_sessions" ) ) {
-			echo '<a class="button pantheon-clear-all-sessions" style="float:right; margin-top: 9px;" href="' . esc_url( add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) ) ) . '">' . esc_html__( 'Clear All', 'pantheon-sessions' ) . '</a>';
+		if ( $wpdb->get_var( "SELECT COUNT(id) FROM $wpdb->wpci_sessions" ) ) {
+			echo '<a class="button wpci-clear-all-sessions" style="float:right; margin-top: 9px;" href="' . esc_url( add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) ) ) . '">' . esc_html__( 'Clear All', 'wpci-sessions' ) . '</a>';
 		}
-		echo '<h2>' . esc_html__( 'Pantheon Sessions', 'pantheon-sessions' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'WpCI Sessions', 'wpci-sessions' ) . '</h2>';
 		if ( isset( $_GET['message'] ) && in_array( $_GET['message'], array( 'delete-all-session', 'delete-session' ) ) ) {
 			if ( 'delete-all-session' === $_GET['message'] ) {
-				$message = __( 'Cleared all sessions.', 'pantheon-sessions' );
+				$message = __( 'Cleared all sessions.', 'wpci-sessions' );
 			} else if ( 'delete-session' === $_GET['message'] ) {
-				$message = __( 'Session cleared.', 'pantheon-sessions' );
+				$message = __( 'Session cleared.', 'wpci-sessions' );
 			}
 			echo '<div id="message" class="updated"><p>' . esc_html( $message ) . '</p></div>';
 		}
@@ -82,15 +82,15 @@ class Admin {
 	public function handle_clear_session() {
 		global $wpdb;
 
-		if ( ! current_user_can( self::$capability ) || ! wp_verify_nonce( $_GET['nonce'], 'pantheon_clear_session' ) ) {
-			wp_die( esc_html__( "You don't have permission to do this.", 'pantheon-sessions' ) );
+		if ( ! current_user_can( self::$capability ) || ! wp_verify_nonce( $_GET['nonce'], 'wpci_clear_session' ) ) {
+			wp_die( esc_html__( "You don't have permission to do this.", 'wpci-sessions' ) );
 		}
 
 		if ( 'all' == $_GET['session'] ) {
-			$wpdb->query( "DELETE FROM $wpdb->pantheon_sessions" );
+			$wpdb->query( "DELETE FROM $wpdb->wpci_sessions" );
 			$message = 'delete-all-session';
 		} else {
-			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->pantheon_sessions WHERE session_id=%s", sanitize_text_field( $_GET['session'] ) ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->wpci_sessions WHERE id=%s", sanitize_text_field( $_GET['session'] ) ) );
 			$message = 'delete-session';
 		}
 		wp_safe_redirect( add_query_arg( 'message', $message, wp_get_referer() ) );
@@ -106,8 +106,8 @@ class Admin {
 	<script>
 	(function($){
 		$(document).ready(function(){
-			$('.pantheon-clear-all-sessions').on('click', function( e ){
-				if ( ! confirm( '<?php esc_html_e( "Are you sure you want to clear all active sessions?", "pantheon-sessions" ); ?>') ) {
+			$('.wpci-clear-all-sessions').on('click', function( e ){
+				if ( ! confirm( '<?php esc_html_e( "Are you sure you want to clear all active sessions?", "wpci-sessions" ); ?>') ) {
 					e.preventDefault();
 				}
 			});

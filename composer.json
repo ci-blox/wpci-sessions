@@ -1,12 +1,12 @@
 {
-    "name": "pantheon-systems/wp-native-php-sessions",
+    "name": "ci-blox/wp-ci-sessions",
     "description": "native PHP sessions stored in the database for WordPress.",
     "type": "wordpress-plugin",
     "license": "GPLv2 or later",
     "authors": [
         {
-            "name": "Pantheon",
-            "email": "noreply@pantheon.io"
+            "name": "WpCI",
+            "email": "noreply@wpci.io"
         },
         {
             "name": "Daniel Bachhuber",
@@ -15,6 +15,6 @@
     ],
     "minimum-stability": "dev",
     "require-dev": {
-        "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master"
+        "wpci-systems/wpci-wordpress-upstream-tests": "dev-master"
     }
 }

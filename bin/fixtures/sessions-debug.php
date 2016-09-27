@@ -42,7 +42,7 @@ add_action( 'template_redirect', function() {
 		return;
 	}
 	global $wpdb;
-	$results = $wpdb->get_results( "SELECT user_id,data FROM {$wpdb->pantheon_sessions}" );
+	$results = $wpdb->get_results( "SELECT user_id,data FROM {$wpdb->wpci_sessions}" );
 	foreach( $results as $result ) {
 		echo $result->user_id . '-' . $result->data . PHP_EOL;
 	}
@@ -54,7 +54,7 @@ add_action( 'template_redirect', function() {
 		return;
 	}
 	session_start();
-	if ( class_exists( 'Pantheon_Sessions' ) && PANTHEON_SESSIONS_ENABLED ) {
+	if ( class_exists( 'WpCI_Sessions' ) && WP_CI_SESSIONS_ENABLED ) {
 		echo 'Plugin is loaded.';
 	} else {
 		echo 'Plugin is not loaded.';

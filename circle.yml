@@ -6,7 +6,7 @@ machine:
     # DB config. Using default CircleCI's database.
     TERMINUS_ENV: ci-$CIRCLE_BUILD_NUM
     TERMINUS_SITE: wp-native-php-sessions
-    WORDPRESS_ADMIN_USERNAME: pantheon
+    WORDPRESS_ADMIN_USERNAME: wpci
     # A random password is set in the dependencies:pre stage as a text file.
     # This line reads the same file repeatedly. If the openssl call were used
     # in this step, it would result in a different password being used in each
@@ -29,7 +29,7 @@ dependencies:
         echo "TERMINUS_TOKEN environment variables missing; assuming unauthenticated build"
         exit 0
       fi
-      composer global require pantheon-systems/terminus "<0.13.0"
+      composer global require wpci-systems/terminus "<0.13.0"
       composer install
       terminus auth login --machine-token=$TERMINUS_TOKEN
 

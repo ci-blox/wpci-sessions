@@ -23,7 +23,7 @@ class Test_Sessions extends WP_UnitTestCase {
 	public function test_session_write_read() {
 		$_SESSION['foo'] = 'bar';
 		session_commit();
-		$session = \Pantheon_Sessions\Session::get_by_sid( session_id() );
+		$session = \WpCI_Sessions\Session::get_by_sid( session_id() );
 		$data = $session->get_data();
 		$this->assertEquals( 'foo|s:3:"bar";', $session->get_data() );
 		return $session;
@@ -34,7 +34,7 @@ class Test_Sessions extends WP_UnitTestCase {
 	 */
 	public function test_session_destroy( $session ) {
 		$session->destroy();
-		$session = \Pantheon_Sessions\Session::get_by_sid( session_id() );
+		$session = \WpCI_Sessions\Session::get_by_sid( session_id() );
 		$this->assertFalse( $session );
 		$this->assertEmpty( $_SESSION );
 	}
@@ -43,14 +43,14 @@ class Test_Sessions extends WP_UnitTestCase {
 		global $wpdb;
 		$_SESSION['foo'] = 'bar';
 		session_commit();
-		$this->assertEquals( 1, $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->pantheon_sessions" ) );
+		$this->assertEquals( 1, $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->wpci_sessions" ) );
 		$current_val = ini_get( 'session.gc_maxlifetime' );
 		ini_set( 'session.gc_maxlifetime', 100000000 );
-		_pantheon_session_garbage_collection( ini_get( 'session.gc_maxlifetime' ) );
-		$this->assertEquals( 1, $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->pantheon_sessions" ) );
+		_wpci_session_garbage_collection( ini_get( 'session.gc_maxlifetime' ) );
+		$this->assertEquals( 1, $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->wpci_sessions" ) );
 		ini_set( 'session.gc_maxlifetime', 0 );
-		_pantheon_session_garbage_collection( ini_get( 'session.gc_maxlifetime' ) );
-		$this->assertEquals( 0, $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->pantheon_sessions" ) );
+		_wpci_session_garbage_collection( ini_get( 'session.gc_maxlifetime' ) );
+		$this->assertEquals( 0, $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->wpci_sessions" ) );
 		ini_set( 'session.gc_maxlifetime', $current_val );
 	}
 

@@ -11,11 +11,11 @@
  *
  * @return true
  */
-function _pantheon_session_open() {
+function _wpci_session_open() {
 	// We use !empty() in the following check to ensure that blank session IDs are not valid.
 	if ( ! empty( $_COOKIE[ session_name() ] ) || ( is_ssl() && ! empty( $_COOKIE[ substr(session_name(), 1) ] ) ) ) {
 		// If a session cookie exists, initialize the session. Otherwise the
-		// session is only started on demand in _pantheon_session_write(), making
+		// session is only started on demand in _wpci_session_write(), making
 		// anonymous users not use a session cookie unless something is stored in
 		// $_SESSION. This allows HTTP proxies to cache anonymous pageviews.
 		if ( get_current_user_id() || ! empty( $_SESSION ) ) {
@@ -31,7 +31,7 @@ function _pantheon_session_open() {
 			$insecure_session_name = substr( session_name(), 1 );
 			$insecure_session_id = md5( $hasher->get_random_bytes( 32 ) );
 			//set custom expire time during cookie session creation
-			$lifetime = (int) apply_filters( 'pantheon_session_expiration', 0 );
+			$lifetime = (int) apply_filters( 'wpci_session_expiration', 0 );
 			setcookie( $insecure_session_name, $insecure_session_id, $_SERVER['REQUEST_TIME'] + $lifetime);
 		}
 	}
@@ -57,7 +57,7 @@ function _pantheon_session_open() {
  * @return
  *   The user's session, or an empty string if no session exists.
  */
-function _pantheon_session_read( $sid ) {
+function _wpci_session_read( $sid ) {
 
 	// Write and Close handlers are called after destructing objects
 	// since PHP 5.0.5.
@@ -72,7 +72,7 @@ function _pantheon_session_read( $sid ) {
 		return '';
 	}
 
-	$session = \Pantheon_Sessions\Session::get_by_sid( $sid );
+	$session = \WpCI_Sessions\Session::get_by_sid( $sid );
 	if ( $session ) {
 		return $session->get_data();
 	} else {
@@ -95,12 +95,12 @@ function _pantheon_session_read( $sid ) {
  * @param $value Session data to write as a serialized string.
  * @return true
  */
-function _pantheon_session_write( $sid, $value ) {
+function _wpci_session_write( $sid, $value ) {
 
-	$session = \Pantheon_Sessions\Session::get_by_sid( $sid );
+	$session = \WpCI_Sessions\Session::get_by_sid( $sid );
 
 	if ( ! $session ) {
-		$session = \Pantheon_Sessions\Session::create_for_sid( $sid );
+		$session = \WpCI_Sessions\Session::create_for_sid( $sid );
 	}
 
 	$session->set_data( $value );
@@ -115,9 +115,9 @@ function _pantheon_session_write( $sid, $value ) {
  *
  * @param $sid Session ID.
  */
-function _pantheon_session_destroy( $sid ) {
+function _wpci_session_destroy( $sid ) {
 
-	$session = \Pantheon_Sessions\Session::get_by_sid( $sid );
+	$session = \WpCI_Sessions\Session::get_by_sid( $sid );
 	if ( ! $session ) {
 		return;
 	}
@@ -137,7 +137,7 @@ function _pantheon_session_destroy( $sid ) {
  *
  * @return true
  */
-function _pantheon_session_close() {
+function _wpci_session_close() {
 	return true;
 }
 
@@ -149,7 +149,7 @@ function _pantheon_session_close() {
  * @param int $lifetime The value of session.gc_maxlifetime, passed by PHP. Sessions not updated for more than $lifetime seconds will be removed.
  * @return true
  */
-function _pantheon_session_garbage_collection( $lifetime ) {
+function _wpci_session_garbage_collection( $lifetime ) {
 	global $wpdb;
 
 	// Be sure to adjust 'php_value session.gc_maxlifetime' to a large enough
@@ -157,6 +157,6 @@ function _pantheon_session_garbage_collection( $lifetime ) {
 	// for three weeks before deleting them, you need to set gc_maxlifetime
 	// to '1814400'. At that value, only after a user doesn't log in after
 	// three weeks (1814400 seconds) will his/her session be removed.
-	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->pantheon_sessions WHERE `datetime` <= %s ", date( 'Y-m-d H:i:s', time() - $lifetime ) ) );
+	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->wpci_sessions WHERE `timestamp` <= %s ", time() - $lifetime)); // date( 'Y-m-d H:i:s', time() - $lifetime ) ) );
 	return true;
 }

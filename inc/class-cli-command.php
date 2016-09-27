@@ -1,11 +1,11 @@
 <?php
 
-namespace Pantheon_Sessions;
+namespace WpCI_Sessions;
 
 use WP_CLI;
 
 /**
- * Interact with Pantheon Sessions
+ * Interact with WpCI Sessions
  */
 class CLI_Command extends \WP_CLI_Command {
 
@@ -20,8 +20,8 @@ class CLI_Command extends \WP_CLI_Command {
 	public function list_( $args, $assoc_args ) {
 		global $wpdb;
 
-		if ( ! PANTHEON_SESSIONS_ENABLED ) {
-			WP_CLI::error( "Pantheon Sessions is currently disabled." );
+		if ( ! WP_CI_SESSIONS_ENABLED ) {
+			WP_CLI::error( "WpCI Sessions is currently disabled." );
 		}
 
 		$defaults = array(
@@ -31,7 +31,7 @@ class CLI_Command extends \WP_CLI_Command {
 		$assoc_args = array_merge( $defaults, $assoc_args );
 
 		$sessions = array();
-		foreach( new \WP_CLI\Iterators\Query( "SELECT * FROM {$wpdb->pantheon_sessions} ORDER BY datetime DESC" ) as $row ) {
+		foreach( new \WP_CLI\Iterators\Query( "SELECT * FROM {$wpdb->wpci_sessions} ORDER BY datetime DESC" ) as $row ) {
 			$sessions[] = $row;
 		}
 
@@ -53,19 +53,19 @@ class CLI_Command extends \WP_CLI_Command {
 	public function delete( $args, $assoc_args ) {
 		global $wpdb;
 
-		if ( ! PANTHEON_SESSIONS_ENABLED ) {
-			WP_CLI::error( "Pantheon Sessions is currently disabled." );
+		if ( ! WP_CI_SESSIONS_ENABLED ) {
+			WP_CLI::error( "WpCI Sessions is currently disabled." );
 		}
 
 		if ( isset( $assoc_args['all'] ) ) {
-			$args = $wpdb->get_col( "SELECT session_id FROM {$wpdb->pantheon_sessions}" );
+			$args = $wpdb->get_col( "SELECT session_id FROM {$wpdb->wpci_sessions}" );
 			if ( empty( $args ) ) {
 				WP_CLI::warning( "No sessions to delete." );
 			}
 		}
 
 		foreach( $args as $session_id ) {
-			$session = \Pantheon_Sessions\Session::get_by_sid( $session_id );
+			$session = \WpCI_Sessions\Session::get_by_sid( $session_id );
 			if ( $session ) {
 				$session->destroy();
 				WP_CLI::log( sprintf( "Session destroyed: %s", $session_id ) );
@@ -78,4 +78,4 @@ class CLI_Command extends \WP_CLI_Command {
 
 }
 
-\WP_CLI::add_command( 'pantheon session', '\Pantheon_Sessions\CLI_Command' );
+\WP_CLI::add_command( 'wpci session', '\WpCI_Sessions\CLI_Command' );

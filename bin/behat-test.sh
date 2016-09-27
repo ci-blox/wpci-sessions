@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-# Execute the Behat test suite against a prepared Pantheon site environment.
+# Execute the Behat test suite against a prepared WpCI site environment.
 ###
 
 terminus auth whoami > /dev/null
@@ -22,6 +22,6 @@ fi
 
 set -ex
 
-export BEHAT_PARAMS='{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://'$TERMINUS_ENV'-'$TERMINUS_SITE'.pantheonsite.io"} }}'
+export BEHAT_PARAMS='{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://'$TERMINUS_ENV'-'$TERMINUS_SITE'.wpcisite.io"} }}'
 
 ./vendor/bin/behat "$@"

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pantheon_Sessions;
+namespace WpCI_Sessions;
 
 class List_Table extends \WP_List_Table {
 
@@ -19,8 +19,8 @@ class List_Table extends \WP_List_Table {
 		$paged = ( isset( $_GET['paged'] ) ) ? (int)$_GET['paged'] : 1;
 		$offset = $per_page * ( $paged - 1 );
 
-		$this->items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->pantheon_sessions ORDER BY datetime DESC LIMIT %d,%d", $offset, $per_page ) );
-		$total_items = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->pantheon_sessions" );
+		$this->items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->wpci_sessions ORDER BY timestamp DESC LIMIT %d,%d", $offset, $per_page ) );
+		$total_items = $wpdb->get_var( "SELECT COUNT(*) FROM $wpdb->wpci_sessions" );
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
@@ -33,7 +33,7 @@ class List_Table extends \WP_List_Table {
 	 * Message for no items found
 	 */
 	public function no_items() {
-		_e( 'No sessions found.', 'pantheon-sessions' );
+		_e( 'No sessions found.', 'wpci-sessions' );
 	}
 
 	/**
@@ -41,11 +41,11 @@ class List_Table extends \WP_List_Table {
 	 */
 	public function get_columns() {
 		return array(
-			'session_id'            => __( 'Session ID', 'pantheon-sessions' ),
-			'user_id'               => __( 'User ID', 'pantheon-sessions' ),
-			'ip_address'            => __( 'IP Address', 'pantheon-sessions' ),
-			'datetime'              => __( 'Last Active', 'pantheon-sessions' ),
-			'data'                  => __( 'Data', 'pantheon-sessions' ),
+			'id'            => __( 'Session ID', 'wpci-sessions' ),
+			//'user_id'               => __( 'User ID', 'wpci-sessions' ),
+			'ip_address'            => __( 'IP Address', 'wpci-sessions' ),
+			'timestamp'              => __( 'Last Active', 'wpci-sessions' ),
+			'data'                  => __( 'Data', 'wpci-sessions' ),
 			);
 	}
 
@@ -55,18 +55,18 @@ class List_Table extends \WP_List_Table {
 	public function column_default( $item, $column_name ) {
 		if ( $column_name == 'data' ) {
 			return '<code>' . esc_html( $item->data ) . '</code>';
-		} else if ( $column_name == 'session_id' ) {
+		} else if ( $column_name == 'id' ) {
 			$query_args = array(
-				'action'       => 'pantheon_clear_session',
-				'nonce'        => wp_create_nonce( 'pantheon_clear_session' ),
-				'session'      => $item->session_id,
+				'action'       => 'wpci_clear_session',
+				'nonce'        => wp_create_nonce( 'wpci_clear_session' ),
+				'session'      => $item->id,
 			);
 			$actions = array(
-				'clear'           => '<a href="' . esc_url( add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) ) ) . '">' . esc_html__( 'Clear', 'pantheon-sessions' ) . '</a>',
+				'clear'           => '<a href="' . esc_url( add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) ) ) . '">' . esc_html__( 'Clear', 'wpci-sessions' ) . '</a>',
 				);
-			return esc_html( $item->session_id ) . $this->row_actions( $actions );
-		} else if ( $column_name == 'datetime' ) {
-			return esc_html( sprintf( esc_html__( '%s ago', 'pantheon-sessions' ), human_time_diff( strtotime( $item->datetime ) ) ) );
+			return esc_html( $item->id ) . $this->row_actions( $actions );
+		} else if ( $column_name == 'timestamp' ) {
+			return esc_html( sprintf( esc_html__( '%s ago', 'wpci-sessions' ), human_time_diff( $item->timestamp ) ) );
 		} else {
 			return esc_html( $item->$column_name );
 		}

@@ -1,5 +1,5 @@
 === WordPress Native PHP Sessions ===
-Contributors: getpantheon, outlandish josh, mpvanwinkle77, danielbachhuber
+Contributors: getwpci, outlandish josh, mpvanwinkle77, danielbachhuber
 Tags: comments, sessions
 Requires at least: 3.0.1
 Tested up to: 4.6
@@ -11,7 +11,7 @@ Use native PHP sessions and stay horizontally scalable. Better living through su
 
 == Description ==
 
-[![Build Status](https://travis-ci.org/pantheon-systems/wp-native-php-sessions.svg?branch=master)](https://travis-ci.org/pantheon-systems/wp-native-php-sessions) [![CircleCI](https://circleci.com/gh/pantheon-systems/wp-native-php-sessions/tree/master.svg?style=svg)](https://circleci.com/gh/pantheon-systems/wp-native-php-sessions/tree/master)
+[![Build Status](https://travis-ci.org/ci-blox/wp-ci-sessions.svg?branch=master)](https://travis-ci.org/ci-blox/wp-ci-sessions) [![CircleCI](https://circleci.com/gh/ci-blox/wp-ci-sessions/tree/master.svg?style=svg)](https://circleci.com/gh/ci-blox/wp-ci-sessions/tree/master)
 
 WordPress core does not use PHP sessions, but sometimes they are required by your use-case, a plugin or theme.
 
@@ -19,7 +19,7 @@ This plugin implements PHP's native session handlers, backed by the WordPress da
 
 Note that primary development is on GitHub if you would like to contribute:
 
-https://github.com/pantheon-systems/wp-native-php-sessions
+https://github.com/ci-blox/wp-ci-sessions
 
 == Installation ==
 
@@ -32,20 +32,20 @@ That's it!
 
 The best way to contribute to the development of this plugin is by participating on the GitHub project:
 
-https://github.com/pantheon-systems/wp-native-php-sessions
+https://github.com/ci-blox/wp-ci-sessions
 
 Pull requests and issues are welcome!
 
 You may notice there are two sets of tests running, on two different services:
 
 * Travis CI runs the [PHPUnit](https://phpunit.de/) test suite.
-* Circle CI runs the [Behat](http://behat.org/) test suite against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
+* Circle CI runs the [Behat](http://behat.org/) test suite against a WpCI site, to ensure the plugin's compatibility with the WpCI platform.
 
 Both of these test suites can be run locally, with a varying amount of setup.
 
 PHPUnit requires the [WordPress PHPUnit test suite](https://make.wordpress.org/core/handbook/testing/automated-testing/phpunit/), and access to a database with name `wordpress_test`. If you haven't already configured the test suite locally, you can run `bash bin/install-wp-tests.sh wordpress_test root '' localhost`.
 
-Behat requires a Pantheon site. Once you've created the site, you'll need [install Terminus](https://github.com/pantheon-systems/terminus#installation), and set the `TERMINUS_TOKEN`, `TERMINUS_SITE`, and `TERMINUS_ENV` environment variables. Then, you can run `./bin/behat-prepare.sh` to prepare the site for the test suite.
+Behat requires a WpCI site. Once you've created the site, you'll need [install Terminus](https://github.com/wpci-systems/terminus#installation), and set the `TERMINUS_TOKEN`, `TERMINUS_SITE`, and `TERMINUS_ENV` environment variables. Then, you can run `./bin/behat-prepare.sh` to prepare the site for the test suite.
 
 == Frequently Asked Questions ==
 
@@ -61,14 +61,14 @@ However, if you intend to scale your application, local tempfiles are a dangerou
 
 == Troubleshooting ==
 
-If you see an error like "Fatal error: session_start(): Failed to initialize storage module: user (path: ) in .../code/wp-content/plugins/plugin-that-uses-sessions/example.php on line 2" you likely have a plugin in the mu-plugins directory that is instantiating a session prior to this plugin loading. To fix, you will need to deactivate this plugin and instead load it via an mu-plugin that loads first, e.g. create an mu-plugin called 00.php and add a line in it to include the wp-native-php-sessions/pantheon-sessions.php file and the problem should disappear.
+If you see an error like "Fatal error: session_start(): Failed to initialize storage module: user (path: ) in .../code/wp-content/plugins/plugin-that-uses-sessions/example.php on line 2" you likely have a plugin in the mu-plugins directory that is instantiating a session prior to this plugin loading. To fix, you will need to deactivate this plugin and instead load it via an mu-plugin that loads first, e.g. create an mu-plugin called 00.php and add a line in it to include the wp-native-php-sessions/wpci-sessions.php file and the problem should disappear.
 
 
 == Changelog ==
 
 = 0.5 =
 * Compatibility with PHP 7.
-* Adds `pantheon_session_expiration` filter to modify session expiration value.
+* Adds `wpci_session_expiration` filter to modify session expiration value.
 
 = 0.4 = 
 * Adjustment to `session_id()` behavior for wider compatibility

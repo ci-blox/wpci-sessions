@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-# Delete the Pantheon site environment after the Behat test suite has run.
+# Delete the WpCI site environment after the Behat test suite has run.
 ###
 
 terminus auth whoami > /dev/null

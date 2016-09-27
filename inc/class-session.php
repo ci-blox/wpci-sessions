@@ -1,6 +1,6 @@
 <?php
 
-namespace Pantheon_Sessions;
+namespace WpCI_Sessions;
 
 class Session {
 
@@ -19,8 +19,8 @@ class Session {
 	public static function get_by_sid( $sid ) {
 		global $wpdb;
 
-		$column_name = self::get_session_id_column();
-		$session_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->pantheon_sessions} WHERE {$column_name}=%s", $sid ) );
+		$column_name = "id"; //self::id;
+		$session_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->wpci_sessions} WHERE {$column_name}=%s", $sid ) );
 		if ( ! $session_row ) {
 			return false;
 		}
@@ -38,12 +38,12 @@ class Session {
 		global $wpdb;
 
 		$insert_data = array(
-			'session_id'          => $sid,
+			'id'          => $sid,
 			);
-		if ( is_ssl() ) {
-			$insert_data['secure_session_id'] = $sid;
-		}
-		$wpdb->insert( $wpdb->pantheon_sessions, $insert_data );
+		/* if ( is_ssl() ) {
+			$insert_data['secure_id'] = $sid;
+		} */
+		$wpdb->insert( $wpdb->wpci_sessions, $insert_data );
 		return self::get_by_sid( $sid );
 	}
 
@@ -86,9 +86,9 @@ class Session {
 			$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 		}
 
-		$wpdb->update( $wpdb->pantheon_sessions, array(
-			'user_id'         => (bool)get_current_user_id(),
-			'datetime'        => date( 'Y-m-d H:i:s' ),
+		$wpdb->update( $wpdb->wpci_sessions, array(
+			//'user_id'         => (bool)get_current_user_id(),
+			'timestamp'        => now(), //date( 'Y-m-d H:i:s' ),
 			'ip_address'      => preg_replace( '/[^0-9a-fA-F:., ]/', '', $_SERVER['REMOTE_ADDR'] ),
 			'data'            => maybe_serialize( $data ),
 			), array( self::get_session_id_column() => $this->get_id() ) );
@@ -102,7 +102,7 @@ class Session {
 	public function destroy() {
 		global $wpdb;
 
-		$wpdb->delete( $wpdb->pantheon_sessions, array( self::get_session_id_column() => $this->get_id() ) );
+		$wpdb->delete( $wpdb->wpci_sessions, array( self::get_session_id_column() => $this->get_id() ) );
 
 		// Reset $_SESSION to prevent a new session from being started
 		$_SESSION = array();
@@ -157,9 +157,10 @@ class Session {
 	 */
 	private static function get_session_id_column() {
 		if ( is_ssl() ) {
-			return 'secure_session_id';
+			return 'id';
+			//return 'secure_id';
 		} else {
-			return 'session_id';
+			return 'id';
 		}
 	}
 

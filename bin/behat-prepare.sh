@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-# Prepare a Pantheon site environment for the Behat test suite, by installing
+# Prepare a WpCI site environment for the Behat test suite, by installing
 # and configuring the plugin for the environment. This script is architected
 # such that it can be run a second time if a step fails.
 ###
@@ -33,8 +33,8 @@ yes | terminus site wipe
 ###
 # Get all necessary environment details.
 ###
-PANTHEON_GIT_URL=$(terminus site connection-info --field=git_url)
-PANTHEON_SITE_URL="$TERMINUS_ENV-$TERMINUS_SITE.pantheonsite.io"
+WP_CI_GIT_URL=$(terminus site connection-info --field=git_url)
+WP_CI_SITE_URL="$TERMINUS_ENV-$TERMINUS_SITE.wpcisite.io"
 PREPARE_DIR="/tmp/$TERMINUS_ENV-$TERMINUS_SITE"
 BASH_DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -43,7 +43,7 @@ BASH_DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ###
 terminus site set-connection-mode --mode=git
 rm -rf $PREPARE_DIR
-git clone -b $TERMINUS_ENV $PANTHEON_GIT_URL $PREPARE_DIR
+git clone -b $TERMINUS_ENV $WP_CI_GIT_URL $PREPARE_DIR
 
 ###
 # Add the copy of this plugin itself to the environment
@@ -65,12 +65,12 @@ cp $BASH_DIR/fixtures/sessions-debug.php $PREPARE_DIR/wp-content/mu-plugins/sess
 ###
 cd $PREPARE_DIR
 git add wp-content
-git config user.email "wp-native-php-sessions@getpantheon.com"
-git config user.name "Pantheon"
+git config user.email "wp-native-php-sessions@getwpci.com"
+git config user.name "WpCI"
 git commit -m "Include WP Native PHP Sessions and its configuration files"
 git push
 
-# Sometimes Pantheon takes a little time to refresh the filesystem
+# Sometimes WpCI takes a little time to refresh the filesystem
 sleep 10
 
 ###
@@ -78,6 +78,6 @@ sleep 10
 ###
 # Silence output so as not to show the password.
 {
-  terminus wp "core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=wp-native-php-sessions@getpantheon.com --admin_password=$WORDPRESS_ADMIN_PASSWORD"
+  terminus wp "core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$WP_CI_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=wp-native-php-sessions@getwpci.com --admin_password=$WORDPRESS_ADMIN_PASSWORD"
 } &> /dev/null
 terminus wp "plugin activate wp-native-php-sessions"
