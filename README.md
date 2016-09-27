@@ -1,4 +1,7 @@
-# WordPress Native PHP Sessions #
+# WordPress CodeIgniter Sessions #
+v 0.9 proof of concept: must utilize tables and then change table settings to match your need
+
+Adapted from WordPress Native PHP Sessions
 **Contributors:** getwpci, outlandish josh, mpvanwinkle77, danielbachhuber  
 **Tags:** comments, sessions  
 **Requires at least:** 3.0.1  
