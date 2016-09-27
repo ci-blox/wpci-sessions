@@ -88,7 +88,7 @@ class Session {
 
 		$wpdb->update( $wpdb->wpci_sessions, array(
 			//'user_id'         => (bool)get_current_user_id(),
-			'timestamp'        => now(), //date( 'Y-m-d H:i:s' ),
+			'timestamp'        => time(), //date( 'Y-m-d H:i:s' ),
 			'ip_address'      => preg_replace( '/[^0-9a-fA-F:., ]/', '', $_SERVER['REMOTE_ADDR'] ),
 			'data'            => maybe_serialize( $data ),
 			), array( self::get_session_id_column() => $this->get_id() ) );
