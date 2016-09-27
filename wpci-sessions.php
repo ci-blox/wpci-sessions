@@ -138,7 +138,7 @@ class WpCI_Sessions {
 	 */
 	private function setup_database() {
 		global $wpdb, $table_prefix;
-		$table_prefix1 = 'bf_';
+		$table_prefix1 = 'igo_';
 		$table_name = "{$table_prefix1}ci3_sessions";
 		$wpdb->wpci_sessions = $table_name;
 		$wpdb->tables[] = 'wpci_sessions';
