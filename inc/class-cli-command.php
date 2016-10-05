@@ -26,12 +26,12 @@ class CLI_Command extends \WP_CLI_Command {
 
 		$defaults = array(
 			'format'      => 'table',
-			'fields'      => 'session_id,timestamp,ip_address,data',
+			'fields'      => 'session_id,user_id,`datetime`,ip_address,data',
 			);
 		$assoc_args = array_merge( $defaults, $assoc_args );
 
 		$sessions = array();
-		foreach( new \WP_CLI\Iterators\Query( "SELECT * FROM {$wpdb->wpci_sessions} ORDER BY `timestamp` DESC" ) as $row ) {
+		foreach( new \WP_CLI\Iterators\Query( "SELECT * FROM {$wpdb->wpci_sessions} ORDER BY `datetime` DESC" ) as $row ) {
 			$sessions[] = $row;
 		}
 
@@ -58,7 +58,7 @@ class CLI_Command extends \WP_CLI_Command {
 		}
 
 		if ( isset( $assoc_args['all'] ) ) {
-			$args = $wpdb->get_col( "SELECT id FROM {$wpdb->wpci_sessions}" );
+			$args = $wpdb->get_col( "SELECT session_id FROM {$wpdb->wpci_sessions}" );
 			if ( empty( $args ) ) {
 				WP_CLI::warning( "No sessions to delete." );
 			}

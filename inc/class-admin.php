@@ -52,7 +52,7 @@ class Admin {
 			'nonce'        => wp_create_nonce( 'wpci_clear_session' ),
 			'session'      => 'all',
 			);
-		if ( $wpdb->get_var( "SELECT COUNT(id) FROM $wpdb->wpci_sessions" ) ) {
+		if ( $wpdb->get_var( "SELECT COUNT(session_id) FROM $wpdb->wpci_sessions" ) ) {
 			echo '<a class="button wpci-clear-all-sessions" style="float:right; margin-top: 9px;" href="' . esc_url( add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) ) ) . '">' . esc_html__( 'Clear All', 'wpci-sessions' ) . '</a>';
 		}
 		echo '<h2>' . esc_html__( 'WpCI Sessions', 'wpci-sessions' ) . '</h2>';
@@ -90,7 +90,7 @@ class Admin {
 			$wpdb->query( "DELETE FROM $wpdb->wpci_sessions" );
 			$message = 'delete-all-session';
 		} else {
-			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->wpci_sessions WHERE id=%s", sanitize_text_field( $_GET['session'] ) ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->wpci_sessions WHERE session_id=%s", sanitize_text_field( $_GET['session'] ) ) );
 			$message = 'delete-session';
 		}
 		wp_safe_redirect( add_query_arg( 'message', $message, wp_get_referer() ) );
